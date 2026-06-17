@@ -34,8 +34,8 @@ export class User {
   level!: number;
 
   @CreateDateColumn({ type: 'timestamp' })
-  createdAt!: Date;
+  ctime?: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  updatedAt!: Date;
+  utime?: Date;
 }
