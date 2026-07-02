@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { QuestionsModule } from './questions/questions/questions.module';
 import { UploadModule } from './upload/upload.module';
 import { KnowladgeModule } from './knowladge/knowladge/knowladge.module';
+import { AuthModule } from './auth/auth/auth.module';
 
 import { join } from 'path';
 import { User } from 'entity/user.entity';
@@ -36,6 +37,7 @@ console.log(entitiesPaths);
     KnowladgeModule,
     QuestionsModule,
     UploadModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

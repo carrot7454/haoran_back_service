@@ -10,6 +10,11 @@ interface KnowladgeDto {
   class: number;
 }
 
+interface PageDto {
+  page: number;
+  size: number;
+}
+
 @Controller('knowladge')
 export class KnowladgeController {
   constructor(private readonly knowladgeService: KnowladgeService) {}
@@ -32,8 +37,18 @@ export class KnowladgeController {
   }
 
   @Post('knowledgelist')
-  async getKnowladgeList() {
-    const data: unknown = await this.knowladgeService.getKnowladgeList();
+  async getKnowladgeList(@Body() body: PageDto) {
+    const data: unknown = await this.knowladgeService.getKnowladgeList(body);
+    return {
+      code: 200,
+      data: data,
+      message: '获取成功',
+    };
+  }
+
+  @Post('simpleKnowledge')
+  async simpleKnowledge() {
+    const data: unknown = await this.knowladgeService.simpleKnowledge();
     return {
       code: 200,
       data: data,

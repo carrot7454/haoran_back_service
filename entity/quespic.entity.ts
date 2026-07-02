@@ -15,16 +15,12 @@ import { Question } from './ques.entity';
 @Entity({ name: 'quespic' })
 export class QuesPic {
   @PrimaryGeneratedColumn()
-  id?: string;
+  id!: string;
   @Column({ type: 'longtext', nullable: true })
   uri?: string;
-  @CreateDateColumn({
-    type: 'datetime',
-  })
+  @CreateDateColumn({ nullable: true })
   createTime?: Date;
-  @UpdateDateColumn({
-    type: 'datetime',
-  })
+  @UpdateDateColumn({ nullable: true })
   updateTime?: Date;
   @ManyToOne(() => Question, (question) => question.quesPic)
   question!: Question;

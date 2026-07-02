@@ -75,7 +75,7 @@ var KnowladgeService = /** @class */ (function () {
                         dt = _a.sent();
                         data = {
                             message: '添加成功',
-                            status: 200,
+                            code: 200,
                             data: dt
                         };
                         return [3 /*break*/, 3];
@@ -83,7 +83,7 @@ var KnowladgeService = /** @class */ (function () {
                         error_1 = _a.sent();
                         data = {
                             message: error_1 instanceof Error ? error_1.message : String(error_1),
-                            status: 500
+                            code: 500
                         };
                         return [3 /*break*/, 3];
                     case 3: return [2 /*return*/, data];
@@ -101,19 +101,71 @@ var KnowladgeService = /** @class */ (function () {
             });
         });
     };
-    KnowladgeService.prototype.getKnowladgeList = function () {
+    KnowladgeService.prototype.getKnowladgeList = function (body) {
         return __awaiter(this, void 0, Promise, function () {
-            var knowladges;
+            var knowladges, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        console.log(body);
+                        return [4 /*yield*/, this.knowladgeRepository
+                                .createQueryBuilder('knowladge')
+                                .leftJoinAndSelect(class_entity_1.ClassEntity, 'class', 'knowladge.className = class.id')
+                                .orderBy('knowladge.className', 'ASC')
+                                .skip((body.page - 1) * body.size)
+                                .take(body.size)
+                                .select("knowladge.id as id,\n        knowladge.name as knowladgename,\n        class.name as classname")
+                                .getRawMany()];
+                    case 1:
+                        knowladges = _b.sent();
+                        _a = {
+                            list: knowladges
+                        };
+                        return [4 /*yield*/, this.knowladgeRepository.count()];
+                    case 2: return [2 /*return*/, (_a.total = _b.sent(),
+                            _a.page = body.page,
+                            _a.size = body.size,
+                            _a)];
+                }
+            });
+        });
+    };
+    KnowladgeService.prototype.simpleKnowledge = function () {
+        return __awaiter(this, void 0, Promise, function () {
+            var data, error_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.knowladgeRepository
-                            .createQueryBuilder('knowladge')
-                            .leftJoinAndSelect(class_entity_1.ClassEntity, 'class', 'knowladge.className = class.id')
-                            .select("knowladge.id as id,\n        knowladge.name as knowladgename,\n        class.name as classname")
-                            .getRawMany()];
+                    case 0:
+                        data = [];
+                        _a.label = 1;
                     case 1:
-                        knowladges = _a.sent();
-                        return [2 /*return*/, knowladges];
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, this.knowladgeRepository.find({
+                                select: {
+                                    id: true,
+                                    name: true
+                                }
+                            })];
+                    case 2:
+                        data = _a.sent();
+                        if (data.length === 0) {
+                            return [2 /*return*/, {
+                                    message: '未找到知识点',
+                                    code: 404
+                                }];
+                        }
+                        return [2 /*return*/, {
+                                message: '查询成功',
+                                code: 200,
+                                data: data
+                            }];
+                    case 3:
+                        error_2 = _a.sent();
+                        return [2 /*return*/, {
+                                message: error_2 instanceof Error ? error_2.message : String(error_2),
+                                code: 500
+                            }];
+                    case 4: return [2 /*return*/];
                 }
             });
         });

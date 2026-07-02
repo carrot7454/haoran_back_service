@@ -13,7 +13,7 @@ import {
 @Entity('userques')
 export class UserQues {
   @PrimaryGeneratedColumn()
-  id?: string;
+  id?: number;
 
   @Column({ nullable: true })
   quesId!: string;
@@ -26,6 +26,9 @@ export class UserQues {
 
   @Column({ type: 'integer', nullable: true, default: 0 })
   is_daily!: number;
+
+  @Column({ type: 'integer', nullable: true, default: -1 })
+  score?: number;
 
   @Column({ nullable: true, default: 0 })
   err_times!: number;

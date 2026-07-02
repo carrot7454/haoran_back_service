@@ -60,6 +60,7 @@ var QuestionsController = /** @class */ (function () {
         var data = {
             name: body.name,
             pdfUri: body.pdf,
+            knowledgeId: body.knowledgeId,
             difficulty: body.difficulty,
             quesPic: body.pics
         };
@@ -124,6 +125,26 @@ var QuestionsController = /** @class */ (function () {
             });
         });
     };
+    QuestionsController.prototype.addUserQues = function (body) {
+        return __awaiter(this, void 0, Promise, function () {
+            var data, dt;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        data = {
+                            id: body.id,
+                            userId: body.userId,
+                            questionId: body.questionId,
+                            pics: body.quesPic.map(function (pic) { return ({ uri: pic }); })
+                        };
+                        return [4 /*yield*/, this.questionsService.addUserQues(data)];
+                    case 1:
+                        dt = _a.sent();
+                        return [2 /*return*/, dt];
+                }
+            });
+        });
+    };
     __decorate([
         common_1.Post('add'),
         __param(0, common_1.Body())
@@ -135,6 +156,10 @@ var QuestionsController = /** @class */ (function () {
     __decorate([
         common_1.Post('queryQuestions')
     ], QuestionsController.prototype, "queryQuestions");
+    __decorate([
+        common_1.Post('addUserQues'),
+        __param(0, common_1.Body())
+    ], QuestionsController.prototype, "addUserQues");
     QuestionsController = __decorate([
         common_1.Controller('questions')
     ], QuestionsController);

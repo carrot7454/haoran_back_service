@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -52,24 +63,54 @@ exports.QuestionsService = void 0;
  */
 var common_1 = require("@nestjs/common");
 var typeorm_1 = require("@nestjs/typeorm");
+var answerques_entity_1 = require("entity/answerques.entity");
 var ques_entity_1 = require("entity/ques.entity");
 var userques_entity_1 = require("entity/userques.entity");
 var typeorm_2 = require("typeorm");
 var QuestionsService = /** @class */ (function () {
-    function QuestionsService(questionRepository, userquesRepository) {
+    function QuestionsService(questionRepository, userquesRepository, answerRepository) {
         this.questionRepository = questionRepository;
         this.userquesRepository = userquesRepository;
+        this.answerRepository = answerRepository;
     }
     QuestionsService.prototype.add = function (body) {
         var _a;
-        var question = this.questionRepository.create({
-            name: body.name,
-            pdfUri: body.pdfUri,
-            difficulty: body.difficulty,
-            isdeleted: false,
-            quesPic: ((_a = body.quesPic) !== null && _a !== void 0 ? _a : []).map(function (uri) { return ({ uri: uri }); })
+        return __awaiter(this, void 0, Promise, function () {
+            var ret, question, err_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _b.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.questionRepository.save({
+                                name: body.name,
+                                pdfUri: body.pdfUri,
+                                difficulty: body.difficulty * 2,
+                                isdeleted: false,
+                                knowledgeId: body.knowledgeId,
+                                quesPic: ((_a = body.quesPic) !== null && _a !== void 0 ? _a : []).map(function (uri) {
+                                    return { uri: uri };
+                                })
+                            })];
+                    case 1:
+                        question = _b.sent();
+                        console.log('question: ', question);
+                        ret = {
+                            data: question,
+                            code: 200,
+                            msg: '添加成功'
+                        };
+                        return [3 /*break*/, 3];
+                    case 2:
+                        err_1 = _b.sent();
+                        ret = {
+                            msg: err_1 instanceof Error ? err_1.message : 'Unknown error',
+                            code: 500
+                        };
+                        return [3 /*break*/, 3];
+                    case 3: return [2 /*return*/, ret];
+                }
+            });
         });
-        return question;
     };
     QuestionsService.prototype.queryQuestions = function () {
         return __awaiter(this, void 0, Promise, function () {
@@ -83,7 +124,7 @@ var QuestionsService = /** @class */ (function () {
     };
     QuestionsService.prototype.getDailyQuestion = function (data) {
         return __awaiter(this, void 0, Promise, function () {
-            var ques, obj, ret, arr, question, i, _ret, err_1;
+            var ques, obj, ret, arr, question, ret1, i, _ret, err_2, question;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -92,8 +133,10 @@ var QuestionsService = /** @class */ (function () {
                     case 1:
                         ques = _a.sent();
                         console.log(ques);
-                        obj = ques.find(function (item) { return item.is_daily == 1; });
+                        obj = ques.find(function (item) { return item.is_daily == 1 || item.status == 2; });
+                        console.log('=========>obj');
                         console.log(obj);
+                        ret = null;
                         if (!!obj) return [3 /*break*/, 7];
                         arr = ques.map(function (item) { return item.id; });
                         return [4 /*yield*/, this.questionRepository.find({
@@ -105,19 +148,19 @@ var QuestionsService = /** @class */ (function () {
                     case 2:
                         question = _a.sent();
                         console.log(question);
-                        ret = null;
+                        ret1 = null;
                         if (question.length) {
                             i = Math.floor(Math.random() * question.length);
                             console.log(i);
-                            ret = question[i];
+                            ret1 = question[i];
                         }
-                        if (!ret) return [3 /*break*/, 6];
+                        if (!ret1) return [3 /*break*/, 6];
                         _a.label = 3;
                     case 3:
                         _a.trys.push([3, 5, , 6]);
                         return [4 /*yield*/, this.userquesRepository.save({
                                 is_daily: 1,
-                                quesId: ret.id,
+                                quesId: ret1.id,
                                 uid: data.uid,
                                 status: 0,
                                 err_times: 0
@@ -125,19 +168,82 @@ var QuestionsService = /** @class */ (function () {
                     case 4:
                         _ret = _a.sent();
                         console.log(_ret);
+                        ret = __assign({ userQuesId: _ret.id, status: _ret.status }, ret1);
                         return [3 /*break*/, 6];
                     case 5:
-                        err_1 = _a.sent();
-                        console.log(err_1);
+                        err_2 = _a.sent();
+                        console.log(err_2);
                         return [3 /*break*/, 6];
                     case 6: return [3 /*break*/, 9];
                     case 7: return [4 /*yield*/, this.questionRepository.findOne({
                             where: { id: obj.quesId }
                         })];
                     case 8:
-                        ret = _a.sent();
+                        question = _a.sent();
+                        if (!question) {
+                            return [2 /*return*/, null];
+                        }
+                        ret = __assign({ userQuesId: obj.id, status: obj.status }, question);
                         _a.label = 9;
                     case 9: return [2 /*return*/, ret];
+                }
+            });
+        });
+    };
+    QuestionsService.prototype.addUserQues = function (data) {
+        return __awaiter(this, void 0, Promise, function () {
+            var ret, hasUser, req, err_3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        console.log(data);
+                        ret = {};
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 5, , 6]);
+                        return [4 /*yield*/, this.answerRepository.findOne({
+                                where: {
+                                    userId: data.userId,
+                                    questionId: data.questionId
+                                }
+                            })];
+                    case 2:
+                        hasUser = _a.sent();
+                        console.log('=============>hasUser');
+                        console.log(hasUser);
+                        if (hasUser) {
+                            ret = {
+                                msg: '数据已存在',
+                                code: 400
+                            };
+                            return [2 /*return*/, ret];
+                        }
+                        return [4 /*yield*/, this.answerRepository.save(data)];
+                    case 3:
+                        req = _a.sent();
+                        return [4 /*yield*/, this.userquesRepository
+                                .createQueryBuilder()
+                                .update(userques_entity_1.UserQues)
+                                .set({ status: 1 })
+                                .where('id = :id', { id: data.id })
+                                .execute()];
+                    case 4:
+                        _a.sent();
+                        ret = {
+                            data: req,
+                            code: 200,
+                            msg: '添加成功'
+                        };
+                        return [3 /*break*/, 6];
+                    case 5:
+                        err_3 = _a.sent();
+                        console.log(err_3);
+                        ret = {
+                            msg: err_3 instanceof Error ? err_3.message : 'Unknown error',
+                            code: 500
+                        };
+                        return [3 /*break*/, 6];
+                    case 6: return [2 /*return*/, ret];
                 }
             });
         });
@@ -145,7 +251,8 @@ var QuestionsService = /** @class */ (function () {
     QuestionsService = __decorate([
         common_1.Injectable(),
         __param(0, typeorm_1.InjectRepository(ques_entity_1.Question)),
-        __param(1, typeorm_1.InjectRepository(userques_entity_1.UserQues))
+        __param(1, typeorm_1.InjectRepository(userques_entity_1.UserQues)),
+        __param(2, typeorm_1.InjectRepository(answerques_entity_1.AnswerquesEntity))
     ], QuestionsService);
     return QuestionsService;
 }());

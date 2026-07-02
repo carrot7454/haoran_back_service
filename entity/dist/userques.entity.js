@@ -31,6 +31,9 @@ var UserQues = /** @class */ (function () {
         typeorm_1.Column({ type: 'integer', nullable: true, "default": 0 })
     ], UserQues.prototype, "is_daily");
     __decorate([
+        typeorm_1.Column()
+    ], UserQues.prototype, "score");
+    __decorate([
         typeorm_1.Column({ nullable: true, "default": 0 })
     ], UserQues.prototype, "err_times");
     __decorate([

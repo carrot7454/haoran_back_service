@@ -77,12 +77,29 @@ var KnowladgeController = /** @class */ (function () {
             });
         });
     };
-    KnowladgeController.prototype.getKnowladgeList = function () {
+    KnowladgeController.prototype.getKnowladgeList = function (body) {
         return __awaiter(this, void 0, void 0, function () {
             var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.knowladgeService.getKnowladgeList()];
+                    case 0: return [4 /*yield*/, this.knowladgeService.getKnowladgeList(body)];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, {
+                                code: 200,
+                                data: data,
+                                message: '获取成功'
+                            }];
+                }
+            });
+        });
+    };
+    KnowladgeController.prototype.simpleKnowledge = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.knowladgeService.simpleKnowledge()];
                     case 1:
                         data = _a.sent();
                         return [2 /*return*/, {
@@ -102,8 +119,12 @@ var KnowladgeController = /** @class */ (function () {
         common_1.Post('classlist')
     ], KnowladgeController.prototype, "getClassList");
     __decorate([
-        common_1.Post('knowledgelist')
+        common_1.Post('knowledgelist'),
+        __param(0, common_1.Body())
     ], KnowladgeController.prototype, "getKnowladgeList");
+    __decorate([
+        common_1.Post('simpleKnowledge')
+    ], KnowladgeController.prototype, "simpleKnowledge");
     KnowladgeController = __decorate([
         common_1.Controller('knowladge')
     ], KnowladgeController);

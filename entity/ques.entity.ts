@@ -15,13 +15,15 @@ import { QuesPic } from './quespic.entity';
 @Entity({ name: 'questions' })
 export class Question {
   @PrimaryGeneratedColumn()
-  id?: string;
+  id!: string;
   @Column({ length: 100, nullable: true, unique: true })
   name!: string;
   @Column({ type: 'longtext', nullable: true })
   pdfUri!: string;
   @Column({ type: 'integer', nullable: true })
   difficulty!: number;
+  @Column({ type: 'integer', nullable: true })
+  knowledgeId!: number;
   @Column({ default: false })
   isdeleted?: boolean;
   @OneToMany(() => QuesPic, (quesPic) => quesPic.question, {
@@ -29,12 +31,8 @@ export class Question {
     eager: true,
   })
   quesPic!: QuesPic[];
-  @CreateDateColumn({
-    type: 'datetime',
-  })
+  @CreateDateColumn({ nullable: true })
   createTime?: Date;
-  @UpdateDateColumn({
-    type: 'datetime',
-  })
+  @UpdateDateColumn({ nullable: true })
   updateTime?: Date;
 }

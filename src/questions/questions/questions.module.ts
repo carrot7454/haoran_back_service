@@ -8,9 +8,10 @@ import { QuestionsService } from './questions.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Question } from 'entity/ques.entity';
 import { UserQues } from 'entity/userques.entity';
+import { AnswerquesEntity } from 'entity/answerques.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Question, UserQues])],
+  imports: [TypeOrmModule.forFeature([Question, UserQues, AnswerquesEntity])],
   controllers: [QuestionsController],
   providers: [QuestionsService],
 })

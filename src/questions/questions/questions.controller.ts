@@ -4,11 +4,13 @@
  */
 import { Body, Controller, Post } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
+import { AnswerquesEntity } from 'entity/answerques.entity';
 
 interface AddQuestionDto {
   name: string;
   pdf: string;
   difficulty: number;
+  knowledgeId: number;
   pics: string[];
 }
 
@@ -16,12 +18,29 @@ interface AddQues {
   name: string;
   pdfUri: string;
   difficulty: number;
+  knowledgeId: number;
   quesPic: string[];
+}
+
+interface AddQues1 {
+  id: number;
+  userId: number;
+  questionId: number;
+  quesPic: string[];
+}
+
+interface AddQues2 {
+  id: number;
 }
 
 interface GetDailyQuesDto {
   diffcute: number; // 根据实际业务调整类型，假设是数字
   uid: string; // 根据实际业务调整类型，假设是字符串
+  isDaily: number;
+}
+
+interface AnswerquesEntity1 extends AnswerquesEntity {
+  id: number;
 }
 
 @Controller('questions')
@@ -34,6 +53,7 @@ export class QuestionsController {
     const data: AddQues = {
       name: body.name,
       pdfUri: body.pdf,
+      knowledgeId: body.knowledgeId,
       difficulty: body.difficulty,
       quesPic: body.pics,
     };
@@ -48,6 +68,7 @@ export class QuestionsController {
     const data: GetDailyQuesDto = {
       diffcute: body.diffcute,
       uid: body.uid,
+      isDaily: body.isDaily,
     };
     const dt: unknown = await this.questionsService.getDailyQuestion(data);
     console.log(dt);
@@ -79,5 +100,29 @@ export class QuestionsController {
         data: dt,
       };
     }
+  }
+
+  @Post('addUserQues')
+  async addUserQues(@Body() body: AddQues1): Promise<any> {
+    const data: AnswerquesEntity1 = {
+      id: body.id,
+      userId: body.userId,
+      questionId: body.questionId,
+      pics: body.quesPic.map((pic) => ({
+        uri: pic,
+        status: 0,
+        replypics: [],
+      })),
+    };
+    const dt: unknown = await this.questionsService.addUserQues(data);
+    return dt;
+  }
+  @Post('finishUserQues')
+  async finishUserQues(@Body() body: AddQues2): Promise<any> {
+    const data: AddQues2 = {
+      id: body.id,
+    };
+    const dt: unknown = await this.questionsService.finishUserQues(data);
+    return dt;
   }
 }

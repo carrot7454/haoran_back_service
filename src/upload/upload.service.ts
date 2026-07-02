@@ -59,8 +59,6 @@ export class UploadService {
         message: '上传失败',
       };
     }
-    console.log('--------->data');
-    console.log(data);
 
     return data;
   }

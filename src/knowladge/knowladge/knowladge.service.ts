@@ -15,8 +15,25 @@ interface KnowladgeDto {
 
 interface KnowladgeResponse {
   message: string;
-  status: number;
-  data?: KnowladgeEntity;
+  code: number;
+  data?: KnowladgeEntity | KnowladgeListDto[];
+}
+
+interface KnowladgeListDto {
+  id?: string;
+  name?: string;
+}
+
+interface PageDto {
+  page: number;
+  size: number;
+}
+
+interface KnowladgePageResponse {
+  page: number;
+  size: number;
+  total: number;
+  list: any[];
 }
 
 @Injectable()
@@ -39,13 +56,13 @@ export class KnowladgeService {
       const dt = await this.knowladgeRepository.save(req);
       data = {
         message: '添加成功',
-        status: 200,
+        code: 200,
         data: dt,
       };
     } catch (error) {
       data = {
         message: error instanceof Error ? error.message : String(error),
-        status: 500,
+        code: 500,
       };
     }
     return data;
@@ -55,16 +72,53 @@ export class KnowladgeService {
     return await this.classEntityRepository.find();
   }
 
-  async getKnowladgeList(): Promise<any[]> {
+  async getKnowladgeList(body: PageDto): Promise<KnowladgePageResponse> {
+    console.log(body);
     const knowladges = await this.knowladgeRepository
       .createQueryBuilder('knowladge')
       .leftJoinAndSelect(ClassEntity, 'class', 'knowladge.className = class.id')
+      .orderBy('knowladge.className', 'ASC')
+      .skip((body.page - 1) * body.size)
+      .take(body.size)
       .select(
         `knowladge.id as id,
         knowladge.name as knowladgename,
         class.name as classname`,
       )
       .getRawMany();
-    return knowladges;
+    return {
+      list: knowladges,
+      total: await this.knowladgeRepository.count(),
+      page: body.page,
+      size: body.size,
+    };
+  }
+
+  async simpleKnowledge(): Promise<KnowladgeResponse> {
+    let data: KnowladgeListDto[] = [];
+    try {
+      data = await this.knowladgeRepository.find({
+        select: {
+          id: true,
+          name: true,
+        },
+      });
+      if (data.length === 0) {
+        return {
+          message: '未找到知识点',
+          code: 404,
+        };
+      }
+      return {
+        message: '查询成功',
+        code: 200,
+        data,
+      };
+    } catch (error) {
+      return {
+        message: error instanceof Error ? error.message : String(error),
+        code: 500,
+      };
+    }
   }
 }

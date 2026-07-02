@@ -26,6 +26,7 @@ var typeorm_1 = require("@nestjs/typeorm");
 var questions_module_1 = require("./questions/questions/questions.module");
 var upload_module_1 = require("./upload/upload.module");
 var knowladge_module_1 = require("./knowladge/knowladge/knowladge.module");
+var auth_module_1 = require("./auth/auth/auth.module");
 var path_1 = require("path");
 var user_entity_1 = require("entity/user.entity");
 var entitiesPaths = [path_1.join(__dirname, '..', 'entity', '*.entity.{ts,js}')];
@@ -52,6 +53,7 @@ var AppModule = /** @class */ (function () {
                 knowladge_module_1.KnowladgeModule,
                 questions_module_1.QuestionsModule,
                 upload_module_1.UploadModule,
+                auth_module_1.AuthModule,
             ],
             controllers: [app_controller_1.AppController],
             providers: [app_service_1.AppService]
