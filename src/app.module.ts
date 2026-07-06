@@ -24,10 +24,10 @@ console.log(entitiesPaths);
     HttpModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
+      host: '8.147.113.36',
       port: 3306,
       username: 'root',
-      password: '198860',
+      password: '198860Lxy',
       database: 'haoran_study',
       entities: [...entitiesPaths],
       synchronize: true,
