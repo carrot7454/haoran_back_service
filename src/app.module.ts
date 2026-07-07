@@ -24,7 +24,8 @@ console.log(entitiesPaths);
     HttpModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '8.147.113.36',
+      // host: '8.147.113.36',
+      host: 'localhost',
       port: 3306,
       username: 'root',
       password: '198860Lxy',
