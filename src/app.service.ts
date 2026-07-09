@@ -14,6 +14,11 @@ interface Login {
   password: string;
 }
 
+interface ChangeUser {
+  id: number;
+  classid: number;
+}
+
 @Injectable()
 export class AppService {
   constructor(
@@ -51,5 +56,23 @@ export class AppService {
       console.error(error);
       return false;
     }
+  }
+  async changeUser(body: ChangeUser) {
+    let data = {};
+    const user = await this.userRepository.findOne({ where: { id: body.id } });
+    if (!user) {
+      data = {
+        code: 500,
+        msg: '用户不存在',
+      };
+    } else {
+      user.classid = body.classid;
+      await this.userRepository.save(user);
+      data = {
+        code: 200,
+        msg: '修改成功',
+      };
+    }
+    return data;
   }
 }

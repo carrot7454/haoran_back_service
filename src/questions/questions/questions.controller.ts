@@ -37,6 +37,7 @@ interface GetDailyQuesDto {
   diffcute: number; // 根据实际业务调整类型，假设是数字
   uid: string; // 根据实际业务调整类型，假设是字符串
   isDaily: number;
+  typeId: number;
 }
 
 interface AnswerquesEntity1 extends AnswerquesEntity {
@@ -69,6 +70,7 @@ export class QuestionsController {
       diffcute: body.diffcute,
       uid: body.uid,
       isDaily: body.isDaily,
+      typeId: body.typeId,
     };
     const dt: unknown = await this.questionsService.getDailyQuestion(data);
     console.log(dt);

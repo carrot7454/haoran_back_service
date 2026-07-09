@@ -19,7 +19,11 @@ interface KnowladgeResponse {
   data?: KnowladgeEntity | KnowladgeListDto[];
 }
 
-interface KnowladgeListDto {
+interface KnowladgeListDto extends ClassEntity {
+  children?: KnowladgeEntity1[];
+}
+
+interface KnowladgeEntity1 {
   id?: string;
   name?: string;
 }
@@ -83,6 +87,7 @@ export class KnowladgeService {
       .select(
         `knowladge.id as id,
         knowladge.name as knowladgename,
+        class.id as classid,
         class.name as classname`,
       )
       .getRawMany();
@@ -97,12 +102,21 @@ export class KnowladgeService {
   async simpleKnowledge(): Promise<KnowladgeResponse> {
     let data: KnowladgeListDto[] = [];
     try {
-      data = await this.knowladgeRepository.find({
-        select: {
-          id: true,
-          name: true,
-        },
-      });
+      data = await this.classEntityRepository.find();
+
+      data = await Promise.all(
+        data.map(async (item) => {
+          item.children = await this.knowladgeRepository.find({
+            where: { className: item.id },
+            select: {
+              id: true,
+              name: true,
+            },
+          });
+          return item;
+        }),
+      );
+
       if (data.length === 0) {
         return {
           message: '未找到知识点',

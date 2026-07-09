@@ -13,6 +13,7 @@ interface Login {
 
 interface Regist extends Login {
   nickname: string;
+  classid: number;
 }
 
 interface Response {
@@ -22,6 +23,11 @@ interface Response {
   level: number;
   id: number;
   password: string;
+}
+
+interface ChangeUser {
+  id: number;
+  classid: number;
 }
 
 @Controller('user')
@@ -59,6 +65,7 @@ export class AppController {
         nickname: data.nickname,
         auth: data.auth,
         level: data.level,
+        classid: data.classid,
       },
     };
   }
@@ -85,7 +92,10 @@ export class AppController {
       ret.message = '昵称不能为空';
       return ret;
     }
-
+    if (!body.classid) {
+      ret.message = '班级不能为空';
+      return ret;
+    }
     const data: unknown = await this.appService.regist(body);
     if (data) {
       ret.code = 200;
@@ -96,6 +106,12 @@ export class AppController {
       ret.message = '注册失败';
     }
 
+    return ret;
+  }
+  @Post('changeUser')
+  async changeUser(@Body() body: ChangeUser): Promise<any> {
+    console.log(body);
+    const ret = await this.appService.changeUser(body);
     return ret;
   }
 }

@@ -21,6 +21,7 @@ interface DailyQuestionRequest {
   uid: string;
   diffcute: number;
   isDaily: number;
+  typeId: number;
 }
 
 interface DailyQuestionResponse {
@@ -120,6 +121,7 @@ export class QuestionsService {
             ? Between(data.diffcute - 1, data.diffcute + 1)
             : data.diffcute,
           id: Not(In(arr)),
+          knowledgeId: data.typeId,
         },
       });
       console.log('question=========>');
