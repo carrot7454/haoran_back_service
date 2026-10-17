@@ -44,6 +44,20 @@ interface AnswerquesEntity1 extends AnswerquesEntity {
   id: number;
 }
 
+interface NewAddQuesDto {
+  name: string;
+  desc: string;
+  type: number;
+  option?: string;
+  difficulty: number;
+  knowladge: string;
+}
+
+interface GetQuesListDto {
+  page: number;
+  size: number;
+}
+
 @Controller('questions')
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
@@ -125,6 +139,24 @@ export class QuestionsController {
       id: body.id,
     };
     const dt: unknown = await this.questionsService.finishUserQues(data);
+    return dt;
+  }
+  @Post('newAddQues')
+  async newAddQues(@Body() body: NewAddQuesDto) {
+    const data: NewAddQuesDto = {
+      name: body.name,
+      desc: body.desc,
+      type: body.type,
+      option: body.option,
+      difficulty: body.difficulty,
+      knowladge: body.knowladge,
+    };
+    const dt: unknown = await this.questionsService.newAddQues(data);
+    return dt;
+  }
+  @Post('getNewQuesList')
+  async getNewQuesList(@Body() body: GetQuesListDto) {
+    const dt: unknown = await this.questionsService.getNewQuesList(body);
     return dt;
   }
 }

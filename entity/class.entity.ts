@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { KnowladgeEntity } from './knowladge.entity';
 
 @Entity('class')
 export class ClassEntity {
@@ -7,4 +8,7 @@ export class ClassEntity {
 
   @Column({ nullable: true })
   name!: string;
+
+  @OneToMany(() => KnowladgeEntity, (knowladge) => knowladge.className)
+  knowladges?: KnowladgeEntity[];
 }

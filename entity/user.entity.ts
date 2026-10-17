@@ -21,11 +21,11 @@ export class User {
   @Column({ nullable: true })
   password!: string;
 
-  @Column({ default: 0 })
-  auth!: number;
-
   @Column({ type: 'int', nullable: true, default: 1 })
-  classid!: number;
+  classid?: number;
+
+  @Column({ type: 'int', nullable: true })
+  groupid!: number;
 
   @Column({ length: 100, nullable: true, unique: true })
   nickname!: string;

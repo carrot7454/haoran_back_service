@@ -6,9 +6,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ClassEntity } from './class.entity';
 
 @Entity('knowladge')
 export class KnowladgeEntity {
@@ -18,8 +21,11 @@ export class KnowladgeEntity {
   @Column({ nullable: true, unique: true })
   name!: string;
 
-  @Column({ nullable: true })
-  className!: number;
+  @ManyToOne(() => ClassEntity, (classEntity) => classEntity.knowladges, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'className' })
+  className!: ClassEntity;
 
   @CreateDateColumn({ type: 'timestamp' })
   ctime?: Date;

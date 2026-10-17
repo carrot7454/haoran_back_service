@@ -5,7 +5,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AnswerquesEntity } from 'entity/answerques.entity';
+import { ClassClassifyEntity } from 'entity/classClassify.entity';
 import { Question } from 'entity/ques.entity';
+import { QuestionEntity } from 'entity/question.entity';
 import { UserQues } from 'entity/userques.entity';
 import { Between, In, Not, Repository } from 'typeorm';
 
@@ -44,6 +46,20 @@ interface finishType {
   id: number;
 }
 
+interface AddQuestionDto {
+  name: string;
+  desc: string;
+  type: number;
+  option?: string;
+  difficulty: number;
+  knowladge: string;
+}
+
+interface PageDto {
+  page: number;
+  size: number;
+}
+
 @Injectable()
 export class QuestionsService {
   constructor(
@@ -54,6 +70,10 @@ export class QuestionsService {
 
     @InjectRepository(AnswerquesEntity)
     private answerRepository: Repository<AnswerquesEntity>,
+    @InjectRepository(QuestionEntity)
+    private questionEntityRepository: Repository<QuestionEntity>,
+    @InjectRepository(ClassClassifyEntity)
+    private classClassifyRepository: Repository<ClassClassifyEntity>,
   ) {}
 
   async add(body: AddQues): Promise<DailyQuestionResponse> {
@@ -227,5 +247,79 @@ export class QuestionsService {
       code: 200,
       msg: '完成成功',
     };
+  }
+  async newAddQues(body: AddQuestionDto): Promise<any> {
+    try {
+      const ret = await this.questionEntityRepository.save(body);
+      return {
+        code: 200,
+        msg: '添加成功',
+        data: ret,
+      };
+    } catch (err) {
+      return {
+        msg: err instanceof Error ? err.message : 'Unknown error',
+        code: 500,
+      };
+    }
+  }
+  async getNewQuesList(body: PageDto) {
+    const page = Number(body.page) > 0 ? Number(body.page) : 1;
+    const size = Number(body.size) > 0 ? Number(body.size) : 10;
+    const skip = (page - 1) * size;
+
+    try {
+      const baseQuery = this.questionEntityRepository
+        .createQueryBuilder('new_questions')
+        .leftJoin(
+          ClassClassifyEntity,
+          'know',
+          'know.code = new_questions.knowladge',
+        )
+        .select([
+          'new_questions.id as id',
+          'new_questions.name as name',
+          'new_questions.type as type',
+          'new_questions.difficulty as difficulty',
+          'new_questions.knowladge as code',
+          'know.name as code_name',
+          'new_questions.createTime as createTime',
+          'new_questions.updateTime as updateTime',
+        ])
+        .addSelect('new_questions.desc', 'desc')
+        .addSelect('new_questions.option', 'option');
+
+      // 必须用 offset/limit，不能用 skip/take：
+      // skip/take + join 会让 TypeORM 生成 `SELECT DISTINCT ... FROM (...) distinctAlias`
+      // 的二层分页 SQL，而自定义的 as 别名会让外层引用不到主键列，导致查不到数据。
+      const [list, total] = await Promise.all([
+        baseQuery
+          .clone()
+          .orderBy('new_questions.id', 'DESC')
+          .offset(skip)
+          .limit(size)
+          .getRawMany(),
+        baseQuery.clone().getCount(),
+      ]);
+      // console.log(list, total);
+
+      return {
+        code: 200,
+        msg: '查询成功',
+        data: {
+          pageinfo: {
+            page,
+            size,
+            total,
+          },
+          list,
+        },
+      };
+    } catch (err) {
+      return {
+        msg: err instanceof Error ? err.message : 'Unknown error',
+        code: 500,
+      };
+    }
   }
 }

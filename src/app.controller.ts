@@ -13,7 +13,7 @@ interface Login {
 
 interface Regist extends Login {
   nickname: string;
-  classid: number;
+  groupid: number;
 }
 
 interface Response {
@@ -63,9 +63,9 @@ export class AppController {
         id: data.id,
         name: data.name,
         nickname: data.nickname,
-        auth: data.auth,
         level: data.level,
         classid: data.classid,
+        groupid: data.groupid,
       },
     };
   }
@@ -92,7 +92,7 @@ export class AppController {
       ret.message = '昵称不能为空';
       return ret;
     }
-    if (!body.classid) {
+    if (!body.groupid) {
       ret.message = '班级不能为空';
       return ret;
     }

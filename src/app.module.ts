@@ -12,9 +12,11 @@ import { QuestionsModule } from './questions/questions/questions.module';
 import { UploadModule } from './upload/upload.module';
 import { KnowladgeModule } from './knowladge/knowladge/knowladge.module';
 import { AuthModule } from './auth/auth/auth.module';
-
+import { FuncsModule } from './funcs/funcs/funcs.module';
 import { join } from 'path';
 import { User } from 'entity/user.entity';
+import { UserModule } from './user/user/user.module';
+
 const entitiesPaths = [join(__dirname, '..', 'entity', '*.entity.{ts,js}')];
 
 console.log(entitiesPaths);
@@ -34,12 +36,15 @@ console.log(entitiesPaths);
       entities: [...entitiesPaths],
       synchronize: true,
       timezone: '+08:00',
+      logging: true,
     }),
     TypeOrmModule.forFeature([User]),
     KnowladgeModule,
     QuestionsModule,
     UploadModule,
     AuthModule,
+    FuncsModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

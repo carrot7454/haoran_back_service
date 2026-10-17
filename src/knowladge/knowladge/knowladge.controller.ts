@@ -2,12 +2,20 @@
  * @Author: Luoxiangyu
  * @LastEditors: Luoxiangyu
  */
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { KnowladgeService } from './knowladge.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 interface KnowladgeDto {
   name: string;
-  class: number;
+  classid?: string;
+  serialid?: string;
 }
 
 interface PageDto {
@@ -54,5 +62,25 @@ export class KnowladgeController {
       data: data,
       message: '获取成功',
     };
+  }
+
+  @Post('muti-upload')
+  @UseInterceptors(FileInterceptor('file'))
+  mutiUpload(@UploadedFile() file: { buffer: Buffer }) {
+    console.log(file);
+    console.log('muti-upload');
+    if (!file) {
+      return {
+        code: 400,
+        message: '未上传文件',
+      };
+    }
+    const data: unknown = this.knowladgeService.mutiUpload(file.buffer);
+    return data;
+  }
+
+  @Post('get-muti')
+  getMuti(): unknown {
+    return this.knowladgeService.getMutiClass();
   }
 }

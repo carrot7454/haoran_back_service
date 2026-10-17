@@ -75,17 +75,6 @@ export class AuthService {
           'answerques.createTime as create_time',
         ])
         .getRawMany();
-      //   _ret = await Promise.all(
-      //     _ret.map(async (item) => {
-      //       const user = await this.userRepo.findOne({
-      //         where: { id: String(item.userId) },
-      //       });
-      //       return {
-      //         ...item,
-      //         name: user?.name,
-      //       };
-      //     }),
-      //   );
 
       console.log(_ret);
       ret = {
