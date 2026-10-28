@@ -6,22 +6,6 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { AnswerquesEntity } from 'entity/answerques.entity';
 
-interface AddQuestionDto {
-  name: string;
-  pdf: string;
-  difficulty: number;
-  knowledgeId: number;
-  pics: string[];
-}
-
-interface AddQues {
-  name: string;
-  pdfUri: string;
-  difficulty: number;
-  knowledgeId: number;
-  quesPic: string[];
-}
-
 interface AddQues1 {
   id: number;
   userId: number;
@@ -34,10 +18,7 @@ interface AddQues2 {
 }
 
 interface GetDailyQuesDto {
-  diffcute: number; // 根据实际业务调整类型，假设是数字
-  uid: string; // 根据实际业务调整类型，假设是字符串
-  isDaily: number;
-  typeId: number;
+  uid: number; // 根据实际业务调整类型，假设
 }
 
 interface AnswerquesEntity1 extends AnswerquesEntity {
@@ -54,37 +35,62 @@ interface NewAddQuesDto {
 }
 
 interface GetQuesListDto {
+  name?: string;
+  status?: number;
+  type?: number;
   page: number;
   size: number;
+}
+
+interface UpdateQuesEntity {
+  id: number;
+  answer?: string;
+  comment?: string;
+}
+
+interface GetQuesDetailDto {
+  id: number;
+}
+
+interface NewFinishUserQuesDto {
+  id: number;
+  comment: string;
+  score: number;
+  is_err: number;
+}
+
+interface User {
+  uid: number;
+}
+
+interface UserDetail extends User {
+  id: number;
 }
 
 @Controller('questions')
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
 
-  @Post('add')
-  addQuestion(@Body() body: AddQuestionDto): any {
-    console.log('============>addQuestion', body);
-    const data: AddQues = {
-      name: body.name,
-      pdfUri: body.pdf,
-      knowledgeId: body.knowledgeId,
-      difficulty: body.difficulty,
-      quesPic: body.pics,
-    };
-    const result: unknown = this.questionsService.add(data);
-    return result;
-  }
+  // @Post('add')
+  // addQuestion(@Body() body: AddQuestionDto): any {
+  //   console.log('============>addQuestion', body);
+  //   const data: AddQues = {
+  //     name: body.name,
+  //     pdfUri: body.pdf,
+  //     knowledgeId: body.knowledgeId,
+  //     difficulty: body.difficulty,
+  //     quesPic: body.pics,
+  //   };
+  //   const result: unknown = this.questionsService.add(data);
+  //   return result;
+  // }
 
   @Post('getDailyQues')
   async getDailyQues(@Body() body: GetDailyQuesDto): Promise<any> {
     console.log(body);
 
     const data: GetDailyQuesDto = {
-      diffcute: body.diffcute,
       uid: body.uid,
-      isDaily: body.isDaily,
-      typeId: body.typeId,
     };
     const dt: unknown = await this.questionsService.getDailyQuestion(data);
     console.log(dt);
@@ -101,22 +107,22 @@ export class QuestionsController {
     }
   }
 
-  @Post('queryQuestions')
-  async queryQuestions(): Promise<any> {
-    const dt: unknown = await this.questionsService.queryQuestions();
-    console.log(dt);
-    if (!dt) {
-      return {
-        code: 400,
-        data: '没有数据',
-      };
-    } else {
-      return {
-        code: 200,
-        data: dt,
-      };
-    }
-  }
+  // @Post('queryQuestions')
+  // async queryQuestions(): Promise<any> {
+  //   const dt: unknown = await this.questionsService.queryQuestions();
+  //   console.log(dt);
+  //   if (!dt) {
+  //     return {
+  //       code: 400,
+  //       data: '没有数据',
+  //     };
+  //   } else {
+  //     return {
+  //       code: 200,
+  //       data: dt,
+  //     };
+  //   }
+  // }
 
   @Post('addUserQues')
   async addUserQues(@Body() body: AddQues1): Promise<any> {
@@ -157,6 +163,37 @@ export class QuestionsController {
   @Post('getNewQuesList')
   async getNewQuesList(@Body() body: GetQuesListDto) {
     const dt: unknown = await this.questionsService.getNewQuesList(body);
+    return dt;
+  }
+  @Post('updateUserQues')
+  async updateUserQues(@Body() body: UpdateQuesEntity) {
+    const dt: unknown = await this.questionsService.updateUserQues(body);
+    return dt;
+  }
+  @Post('getUserQuesList')
+  async getUserQuesList(@Body() body: GetQuesListDto) {
+    const dt: unknown = await this.questionsService.getUserQuesList(body);
+    return dt;
+  }
+  @Post('getQuesDetail')
+  async getQuesDetail(@Body() body: GetQuesDetailDto) {
+    const dt: unknown = await this.questionsService.getQuesDetail(body);
+    return dt;
+  }
+  @Post('newFinishUserQues')
+  async newFinishUserQues(@Body() body: NewFinishUserQuesDto) {
+    const dt: unknown = await this.questionsService.newFinishUserQues(body);
+    return dt;
+  }
+  @Post('getUserQuesByStudent')
+  async getUserQuesByStudent(@Body() body: User) {
+    const dt: unknown = await this.questionsService.getUserQuesByStudent(body);
+    return dt;
+  }
+  @Post('getUserQuesByStudentDetail')
+  async getUserQuesByStudentDetail(@Body() body: UserDetail) {
+    const dt: unknown =
+      await this.questionsService.getUserQuesByStudentDetail(body);
     return dt;
   }
 }

@@ -11,6 +11,8 @@ import { UserQues } from 'entity/userques.entity';
 import { AnswerquesEntity } from 'entity/answerques.entity';
 import { QuestionEntity } from 'entity/question.entity';
 import { ClassClassifyEntity } from 'entity/classClassify.entity';
+import { User } from 'entity/user.entity';
+import { FuncClassEntity } from 'entity/funcClass.entity';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { ClassClassifyEntity } from 'entity/classClassify.entity';
       AnswerquesEntity,
       QuestionEntity,
       ClassClassifyEntity,
+      User,
+      FuncClassEntity,
     ]),
   ],
   controllers: [QuestionsController],

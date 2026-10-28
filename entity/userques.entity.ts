@@ -16,22 +16,25 @@ export class UserQues {
   id?: number;
 
   @Column({ nullable: true })
-  quesId!: string;
+  quesId!: number;
 
   @Column({ nullable: true })
-  uid!: string;
+  uid!: number;
 
   @Column({ type: 'integer', nullable: true, default: 0 })
   status!: number;
-
-  @Column({ type: 'integer', nullable: true, default: 0 })
-  is_daily!: number;
 
   @Column({ type: 'integer', nullable: true, default: -1 })
   score?: number;
 
   @Column({ nullable: true, default: 0 })
   err_times!: number;
+
+  @Column({ default: '' })
+  answer?: string;
+
+  @Column({ type: 'longtext', nullable: true })
+  comment?: string | null;
 
   @CreateDateColumn()
   c_time?: Date;
