@@ -55,4 +55,17 @@ export class FuncsService {
       };
     }
   }
+  async getSingleClassSeries(id: number) {
+    try {
+      const classSeries = await this.funcClassRepository.findOne({
+        where: { id },
+      });
+      return { code: 200, msg: '获取成功', data: classSeries };
+    } catch (err: unknown) {
+      return {
+        code: 500,
+        msg: err instanceof Error ? err.message : 'Unknown error',
+      };
+    }
+  }
 }

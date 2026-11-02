@@ -1,3 +1,7 @@
+/*
+ * @Author: Luoxiangyu
+ * @LastEditors: Luoxiangyu
+ */
 import { Body, Controller, Post } from '@nestjs/common';
 import { FuncsService } from './funcs.service';
 
@@ -21,5 +25,9 @@ export class FuncsController {
     @Body('knowledgeid') knowledgeid: string,
   ) {
     return this.funcsService.pairClassKnowledge(classid, knowledgeid);
+  }
+  @Post('getSingleClassSeries')
+  getSingleClassSeries(@Body('id') id: number) {
+    return this.funcsService.getSingleClassSeries(id);
   }
 }
