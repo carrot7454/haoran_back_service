@@ -85,7 +85,7 @@ export class KnowladgeService {
         if (body.serialid) {
           console.log(body.serialid);
           const ls = await this.classClassifyRepository.find({
-            where: { parentCode: code + body.serialid },
+            where: { parentCode: body.serialid },
           });
           const tmp_code = this.addzero(ls.length + 1);
           _dt = {
@@ -94,6 +94,8 @@ export class KnowladgeService {
             parentCode: body.serialid,
             step: code + '/' + body.serialid + '/' + body.serialid + tmp_code,
           };
+          console.log('-------->dt');
+          console.log(_dt);
         } else {
           const ls = await this.classClassifyRepository.find({
             where: { parentCode: code },

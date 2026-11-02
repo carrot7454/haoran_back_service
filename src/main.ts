@@ -10,7 +10,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // app.use(bodyParser.json({ limit: ConfigService.get('MAX_REQ_BODY_SIZE') || '10mb' }));
   // app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-  app.enableCors();
+  app.enableCors({
+    origin: 'http://127.0.0.1:9000', // 明确指定你的前端地址
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true, // 如果你的前端 axios 配置了 withCredentials: true
+  });
+
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 

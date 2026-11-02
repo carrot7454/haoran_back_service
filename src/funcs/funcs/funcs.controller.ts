@@ -26,7 +26,7 @@ export class FuncsController {
   ) {
     return this.funcsService.pairClassKnowledge(classid, knowledgeid);
   }
-  @Post('getSingleClassSeries')
+  @Post('getsingleclassseries')
   getSingleClassSeries(@Body('id') id: number) {
     return this.funcsService.getSingleClassSeries(id);
   }
